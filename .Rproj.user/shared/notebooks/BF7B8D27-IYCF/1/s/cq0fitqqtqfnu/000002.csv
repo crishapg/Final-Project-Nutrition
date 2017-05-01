@@ -1,0 +1,4 @@
+"0","```r
+library(plotly)
+plot_ly(MNP, x = ~Region, y=~childrenMNP, color = ~Region, type = \"bar\", opacity=0.5)
+```"

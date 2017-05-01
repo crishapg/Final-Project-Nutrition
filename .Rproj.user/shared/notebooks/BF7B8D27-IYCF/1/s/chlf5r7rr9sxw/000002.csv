@@ -1,0 +1,8 @@
+"0","```r
+plot_ly(filter(edu_long, area_type==\"county\"), x = ~coll, y=~HS, 
+                     color = ~year, type = \"scatter\",
+                     text = ~paste(\"County: \", area_name, 'Year:', year)) 
+```"
+"1","Error in filter_(.data, .dots = lazyeval::lazy_dots(...)) : 
+  object 'edu_long' not found
+"

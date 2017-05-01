@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"\"\noutput: html_document\n---\n\n##Is the Scaling Up Nutrition Strategy being effectively implemented globally?\n\n<img src=\"C:/Users/crish/OneDrive/Documents/GitHub/final-project-nutrition/images/kid intro.png\" width=\"100%\" />\n\n",
+    "created" : 1493663436387.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1866710119",
+    "id" : "1E8A3B43",
+    "lastKnownWriteTime" : 1493664806,
+    "last_content_update" : 1493664806428,
+    "path" : "~/GitHub/final-project-nutrition/index.Rmd",
+    "project_path" : "index.Rmd",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
