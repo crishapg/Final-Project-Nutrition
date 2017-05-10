@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "name: \"Scale Up Nutrition Strategy\"\nnavbar:\n  title: \"Scaling Up Nutrition\"\n  left:\n    - text: \"Overview\"\n      href: Overview.html\n    - text: \"Infant and Young Child Feeding\"\n      href: IYCF.html\n    - text: \"Multiple Micronutrient Powders\"\n      href: MNP.html\n    - text: \"Severe Acute Malnutrition\"\n      href: SAM.html",
+    "created" : 1493652333020.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1274963229",
+    "id" : "78703FAF",
+    "lastKnownWriteTime" : 1493695176,
+    "last_content_update" : 1493695176915,
+    "path" : "~/GitHub/Malnutrition/_site.yml",
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "yaml"
+}

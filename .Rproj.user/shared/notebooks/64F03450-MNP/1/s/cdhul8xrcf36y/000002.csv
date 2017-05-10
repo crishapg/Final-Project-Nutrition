@@ -1,0 +1,46 @@
+"0","library(leaflet)"
+"0","library (raster)"
+"2","Loading required package: sp
+"
+"0","library(rgdal)"
+"2","rgdal: version: 1.2-5, (SVN revision 648)
+ Geospatial Data Abstraction Library extensions to R successfully loaded
+ Loaded GDAL runtime: GDAL 2.0.1, released 2015/09/15
+ Path to GDAL shared files: C:/Users/crish/OneDrive/Documents/R/win-library/3.3/rgdal/gdal
+ Loaded PROJ.4 runtime: Rel. 4.9.2, 08 September 2015, [PJ_VERSION: 492]
+ Path to PROJ.4 shared files: C:/Users/crish/OneDrive/Documents/R/win-library/3.3/rgdal/proj
+ Linking to sp version: 1.2-4 
+"
+"0","library(RColorBrewer)"
+"0","library(plotly)"
+"2","Loading required package: ggplot2
+"
+"2","
+Attaching package: ‘plotly’
+
+"
+"2","The following object is masked from ‘package:ggplot2’:
+
+    last_plot
+
+"
+"2","The following object is masked from ‘package:raster’:
+
+    select
+
+"
+"2","The following object is masked from ‘package:stats’:
+
+    filter
+
+"
+"2","The following object is masked from ‘package:graphics’:
+
+    layout
+
+"
+"0","library(devtools)"
+"0","#devtools::install_github(""rstudio/leaflet"")"
+"0","setwd(""C:/Users/crish/OneDrive/Documents/GitHub/Malnutrition"")"
+"0","library(readr)"
+"0","mnp <- readstata13::read.dta13(""data/2015_MNP.dta"")"

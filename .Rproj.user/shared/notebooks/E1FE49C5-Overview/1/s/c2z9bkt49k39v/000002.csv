@@ -1,0 +1,8 @@
+"0","myvars <- c(""country"", ""region"", ""year"", ""wasting"", ""stunting"", ""pop5"")"
+"0","jme_short <- jmeyears[myvars]"
+"0","#install.packages(""DT"")"
+"0","library(DT)"
+"0","datatable(jme_short, "
+"0","          colnames = c('Country', 'Region', 'Year', 'Wasting (%)', "
+"0","                       'Stunting (%)', 'Children < 5 years old (000)'), "
+"0","          filter = 'top', options = list(pageLength = 10, autoWidth = TRUE))"

@@ -1,0 +1,5 @@
+"0","```r
+plot_ly(iycf, x = ~Region, y=~Counselling_mothers, color = ~Region, type = \"bar\")
+```"
+"1","Ignoring 115 observationsIgnoring 115 observations
+"

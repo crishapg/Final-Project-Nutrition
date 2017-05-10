@@ -1,0 +1,30 @@
+"0","```r
+childrenMNP <- c(203552,2285242,570648,4263234,446194,1785867,612016)
+Region <- c(\"CEE/CIS\", \"East Asia and Pacific\", \"Eastern and Southern Africa\", 
+            \"Latin America and the Caribbean\", \"Middle East and North Africa\",
+            \"South Asia\", \"West and Central Africa\")
+MNP <- data.frame(childrenMNP,Region)
+names(MNP) <- c(\"childrenMNP\",\"Region\")
+library(ggplot2)
+library(ggthemes)
+library(scales)
+ggplot(data=MNP, aes(x=Region, y=childrenMNP, fill=Region)) + geom_bar(stat = \"identity\") + 
+  scale_fill_brewer(palette=\"YlGnBu\") +
+  ggtitle(\"Graph 1. Number of children given Micronutrient Powder, per region, 2015\") + 
+  labs(x=\"\", y = \"Children given MNP\", size=8) +
+  theme_classic(base_size = 12) + theme(text = element_text(color = \"gray20\"),
+                                        axis.text.x = element_text(NULL),
+          legend.position = c(\"bottom\"), legend.direction = \"horizontal\",
+          legend.justification = 0.05, legend.text = element_text(size = 9, color = \"gray10\"),
+          legend.key.height=unit(1,\"line\"), legend.key.width=unit(1,\"line\"),
+          axis.text = element_text(face = \"italic\"),
+          axis.title.x = element_text(vjust = -1),
+          axis.title.y = element_text(vjust = 2),
+          axis.ticks.y = element_blank(),
+          axis.line = element_line(color = \"gray40\", size = 0.5),
+          axis.line.y = element_blank(),
+          panel.grid.major = element_line(color = \"gray50\", size = 0.5),
+          panel.grid.major.x = element_blank(),
+          plot.margin = margin(t = 0, r = 0, b = 40, l = 5, unit = \"pt\"),
+          plot.title = element_text(face = \"bold\", color = \"black\", size = 11, hjust=0.5))
+```"

@@ -1,0 +1,306 @@
+---
+title: "Global child malnutrition overview"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+setwd("C:/Users/crish/OneDrive/Documents/Columbia SIPA/2017 Spring/Data Visualization/Final Project/")
+
+library(readr)
+jme_latest <- readstata13::read.dta13("data/JME_2016_latest.dta")
+jme <- readstata13::read.dta13("data/JME_2016.dta")
+disparities <- readstata13::read.dta13("data/stunting disparities.dta")
+```
+
+## Nearly half of all deaths in children under 5 are attributable to undernutrition
+
+Undernutrition puts children at greater risk of dying from common infections, increases the frequency and severity of such infections, and contributes to delayed recovery. 
+
+Poor nutrition in the first 1,000 days of a child's life can also lead to stunted growth, which is irreversible and associated with impaired cognitive ability and reduced school and work performance.
+
+###Forms of malnutrition
+
+<img src="C:/Users/crish/OneDrive/Documents/GitHub/Malnutrition/Project/images/definitions.png" width="100%" />
+
+
+
+```{r, include=FALSE}
+library(raster)
+world_spdf <- shapefile("C:/Users/crish/OneDrive/Documents/Columbia SIPA/2017 Spring/Data Visualization/Final Project/data/world_map/TM_WORLD_BORDERS_SIMPL-0.3.shp")
+
+# Merge the QoG data to Shape Files
+library(dplyr)
+mapjme <- world_spdf@data %>% left_join(jme_latest, by = c(ISO3 = "iso"))
+world_spdf@data <- mapjme
+
+```
+
+####Map 1. Prevalence of wasting and stunting per country
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.align='center'}
+
+library(leaflet)
+leaflet(world_spdf) %>% 
+  addProviderTiles("Esri.WorldGrayCanvas")  %>% 
+  setView(lat=25, lng=2.8 , zoom=2) %>%
+  
+    # Base groups = Background layer
+    addTiles(group = "OpenStreetMap") %>%
+    addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
+    addProviderTiles(providers$Stamen.Toner, group = "Toner")  %>%
+    
+    # Data Layers
+      # First Data Layer
+    addPolygons(group="Wasting", data=world_spdf,
+                stroke = FALSE, fillOpacity = 1, smoothFactor = 0.5, 
+                color = ~colorNumeric("Oranges", wasting)(wasting),
+                popup = paste("Country:",world_spdf$NAME,"<br/>",
+                              "Wasting prevalence:", world_spdf$wasting,"%","<br/>")) %>%
+    addLegend("bottomright", pal = colorNumeric("Oranges", world_spdf$wasting), 
+              values = ~wasting, title = "% Wasting", opacity = 1) %>%
+  
+  # Second Data Layer:
+  addPolygons(group="Stunting",
+                stroke = FALSE, fillOpacity = 1, smoothFactor = 0.5, 
+                color = ~colorQuantile("Reds", stunting)(stunting),
+                popup = paste("Country:",world_spdf$NAME,"<br/>",
+                              "Stunting prevalence:", world_spdf$stunting,"%","<br/>")) %>%
+  addLegend("bottomleft", pal = colorNumeric("Reds", world_spdf$stunting), 
+            values = ~stunting, title = "% Stunting", opacity = 1) %>%
+  
+    # Layers control
+    addLayersControl(
+    baseGroups = c("OpenStreetMap", "Toner", "Toner Lite"),
+    overlayGroups = c("Stunting","Wasting"),
+    options = layersControlOptions(collapsed = TRUE) )
+```
+
+
+##The relationship between wasting and stunting 
+
+####Countries with higher levels of stunting demand immediate attention...
+
+```{r, include=FALSE}
+library(ggplot2)
+library(ggthemes)
+library(scales)
+
+ggplot(jme_latest, aes(x=stunting, y=wasting, color=region)) + geom_point(alpha=0.5, size=3) + 
+  ggtitle("Prevalence of stunting and wasting") + 
+  labs(x="Stunting (%)", y = "Wasting (%)", size=8) +
+  theme_classic(base_size = 12) + theme(text = element_text(color = "gray20"),
+                                        axis.text.x = element_text(NULL),
+          legend.position = c("bottom"),
+          axis.text = element_text(face = "italic"),
+          axis.title.x = element_text(vjust = -1),
+          axis.title.y = element_text(vjust = 2),
+          axis.ticks.y = element_blank(),
+          axis.line = element_line(color = "gray40", size = 0.5),
+          axis.line.y = element_blank(),
+          panel.grid.major = element_line(color = "gray50", size = 0.5),
+          panel.grid.major.x = element_blank(),
+          plot.margin = margin(t = 0, r = 0, b = 40, l = 5, unit = "pt"),
+          plot.title = element_text(face = "bold", color = "black", size = 11, hjust=0.5))
+```
+
+
+
+
+
+```{r, include=FALSE}
+#### Graph 1. Relationship between stunting and wasting prevalence
+
+library(plotly) 
+plot_ly(jme_latest, x = ~stunting, y=~wasting, 
+                     color = ~region, type = "scatter",
+                     text = ~paste(country, 'Year:', year))
+```
+
+
+```{r, include=FALSE}
+region <- c("CEECIS", "EAPRO", "ESARO", "LACRO", "MENA", "ROSA" , "WCARO")
+perc_wast <- c(3.0,	5.5,	6.2,	1.7,	8.7,	14.2,	8.6)
+perc_stunt <- c(11.9,	18.7,	35.7,	12.8,	21.3,	39.1,	33.8)
+perc_malnutrition <- data.frame(region, perc_wast, perc_stunt)
+names(perc_malnutrition) <- c("Region", "perc_wasting","perc_stunt")
+```
+
+The prevalence of wasting and stunting show that malnutrition is present in all areas. The most affected regions in terms of the proportion of children affected are South Asia (ROSA), East and South Africa (ESARO) and West and Central Africa (WCARO).  
+
+##Global prevalence of stunting and wasting, per region
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(plotly)
+plot_ly(perc_malnutrition, x = ~perc_wast, y=~region, type = "bar", 
+                     text = ~paste('Wasting %:',perc_wasting), name='% Wasting')  %>%
+  add_trace(x = ~perc_stunt, text = ~paste('Stunting %:',perc_stunt), name = '% Stunting') %>%
+  layout(xaxis = list(title = 'Percentage of children'), barmode = 'group')
+```
+
+
+
+However, when looking at absolute numbers, South Asia is the most affected region with over 20 million children with malnutrition. 
+
+#### Graph 2. Wasting and stunting, number of children affected per region, 2015
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+jme2014 <- jme[which(jme$year=='2014'),]
+library(plotly)
+p<- plot_ly(jme2014, x = ~num_wasting, y=~region, type = "bar", 
+                     text = ~paste('Wasting, number of children:',num_wasting), name='Wasting')  %>%
+  add_trace(x = ~num_stunting, name = 'Stunting') %>%
+  layout(xaxis = list(title = 'Number of children'), barmode = 'group')
+p
+
+```
+
+
+
+```{r, include=FALSE}
+
+jmeyears <- jme[which(jme$year=='2000' | jme$year=='2006' | jme$year=='2010' | jme$year=='2014'),]
+
+ggplot(data=jmeyears, aes(x=year, y=num_wasting, fill=year)) + geom_bar(stat = "identity") + 
+         scale_fill_brewer(palette="YlGnBu") + 
+  ggtitle("Graph 1. Number of children wasted, 2014") + 
+  labs(x="", y = "Number of children wasted", size=8) +
+  theme_classic(base_size = 12) + theme(text = element_text(color = "gray20"),
+                                        axis.text.x = element_text(NULL),
+          legend.position = c("none"), 
+          axis.text = element_text(face = "italic"),
+          axis.title.x = element_text(vjust = -1),
+          axis.title.y = element_text(vjust = 2),
+          axis.ticks.y = element_blank(),
+          axis.line = element_line(color = "gray40", size = 0.5),
+          axis.line.y = element_blank(),
+          panel.grid.major = element_line(color = "gray50", size = 0.5),
+          panel.grid.major.x = element_blank(),
+          plot.margin = margin(t = 0, r = 0, b = 40, l = 5, unit = "pt"),
+          plot.title = element_text(face = "bold", color = "black", size = 11, hjust=0.5))
+```
+
+
+```{r, include=FALSE}
+stunting_global <- c(39.6 , 35.7 , 32.7 , 29.4 , 24.4 , 23.2)
+year <- c("1990", "1995", "2000", "2005", "2010", "2015") 
+trend_stunting_global <- data.frame(stunting_global,year)
+names(trend_stunting_global) <- c("stunting_global","year")
+
+library(ggplot2)
+library(ggthemes)
+library(scales)
+ggplot(data=trend_stunting_global, aes(x=year, y=stunting_global)) + 
+  geom_bar(stat = "identity", fill="#009FDF") + 
+  scale_fill_brewer(palette="YlGnBu") +
+  ggtitle("Graph 1. Trends in stunting prevalence, 1990-2015") + 
+  labs(x="", y = "Children given MNP", size=8) +
+  theme_classic(base_size = 12) + theme(text = element_text(color = "gray20"),
+                                        axis.text.x = element_text(NULL),
+          legend.position = c("bottom"), legend.direction = "horizontal",
+          legend.justification = 0.05, legend.text = element_text(size = 9, color = "gray10"),
+          legend.key.height=unit(1,"line"), legend.key.width=unit(1,"line"),
+          axis.text = element_text(face = "italic"),
+          axis.title.x = element_text(vjust = -1),
+          axis.title.y = element_text(vjust = 2),
+          axis.ticks.y = element_blank(),
+          axis.line = element_line(color = "gray40", size = 0.5),
+          axis.line.y = element_blank(),
+          panel.grid.major = element_line(color = "gray50", size = 0.5),
+          panel.grid.major.x = element_blank(),
+          plot.margin = margin(t = 0, r = 0, b = 40, l = 5, unit = "pt"),
+          plot.title = element_text(face = "bold", color = "black", size = 11, hjust=0.5))
+```
+
+###Trends in malnutrition prevalence
+
+Malnutrition rates remain alarming: stunting is declining too slowly
+
+
+#### Graph 3. Global prevalence of stunting, 1995-2015
+
+```{r, echo=FALSE}
+
+p<- plot_ly(trend_stunting_global, x = ~year, y=~stunting_global, 
+                     type = "bar",
+                     text = ~paste('Stunting (%):',stunting_global, 'Year:', year)) %>%
+  layout(yaxis = list(title = 'Global prevalence of stunting, 1995-2015'), barmode = 'group')
+p
+```
+
+
+
+####Regional trends
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(ggthemes)
+library(scales)
+
+jme0614 <- jme[which(jme$year=='2006' | jme$year=='2014'),]
+
+ggplot(jme0614, aes(x=year, y=stunting)) + 
+  geom_boxplot() +
+  geom_jitter(size = 4, alpha = 0.5, aes(col = region, size=year), na.rm = TRUE)  + facet_grid(. ~ region) +
+  ggtitle("Graph 4. Percentage of stunting per region, 2006-2014") + 
+  labs(x="", y = "Stunting (%)", size=8) +
+  ggthemes::theme_few(base_size = 12) + theme(text = element_text(color = "gray20"),
+                                        axis.text.x = element_text(NULL),
+          legend.position = c("none"), 
+          axis.text = element_text(face = "italic"),
+          axis.title.x = element_text(vjust = -1),
+          axis.title.y = element_text(vjust = 2),
+          axis.ticks.y = element_blank(),
+          axis.line = element_line(color = "gray40", size = 0.5),
+          axis.line.y = element_blank(),
+          panel.grid.major = element_line(color = "gray50", size = 0.5),
+          panel.grid.major.x = element_blank(),
+          plot.margin = margin(t = 0, r = 0, b = 40, l = 5, unit = "pt"),
+          plot.title = element_text(face = "bold", color = "black", size = 11, hjust=0.5))
+```
+
+
+
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(ggthemes)
+library(scales)
+
+ggplot(jme0614, aes(x=year, y=wasting)) + 
+  geom_boxplot() +
+  geom_jitter(size = 4, alpha = 0.5, aes(col = region, size=year), na.rm = TRUE)  + facet_grid(. ~ region) +
+  ggtitle("Graph 5. Percentage of wasting per region, 2006-2014") + 
+  labs(x="", y = "Wasting (%)", size=8) +
+  ggthemes::theme_few(base_size = 12) + theme(text = element_text(color = "gray20"),
+                                        axis.text.x = element_text(NULL),
+          legend.position = c("none"), 
+          axis.text = element_text(face = "italic"),
+          axis.title.x = element_text(vjust = -1),
+          axis.title.y = element_text(vjust = 2),
+          axis.ticks.y = element_blank(),
+          axis.line = element_line(color = "gray40", size = 0.5),
+          axis.line.y = element_blank(),
+          panel.grid.major = element_line(color = "gray50", size = 0.5),
+          panel.grid.major.x = element_blank(),
+          plot.margin = margin(t = 0, r = 0, b = 40, l = 5, unit = "pt"),
+          plot.title = element_text(face = "bold", color = "black", size = 11, hjust=0.5))
+```
+
+#### Table 1. Wasting and stunting prevalences, 2000-2014
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=3, fig.align='center'}
+
+jmeyears$wasting1 <- round(jmeyears$wasting, digits = 2)
+jmeyears$stunting1 <- round(jmeyears$stunting, digits = 2)
+jmeyears$pop51 <- round(jmeyears$pop5, digits = 0)
+myvars <- c("country", "region", "year", "wasting1", "stunting1", "pop51")
+jme_short <- jmeyears[myvars]
+
+#install.packages("DT")
+library(DT)
+datatable(jme_short, 
+          colnames = c('Country', 'Region', 'Year', 'Wasting (%)', 
+                       'Stunting (%)', 'Children < 5 years old (000)'), 
+          filter = 'top', options = list(pageLength = 10, autoWidth = TRUE))
+```

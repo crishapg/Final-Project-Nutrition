@@ -1,0 +1,13 @@
+"0","```r
+leaflet(world_spdf) %>% 
+    setView(lat=10, lng=0 , zoom=2) %>%
+    addPolygons(
+    stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, 
+    color = ~colorNumeric(\"RdYlGn\", Health_facilities)(Health_facilities),
+    popup = paste(\"Country:\",world_spdf$NAME,\"<br/>\",
+                  \"Health facilities:\",round(world_spdf$Health_facilities,1),\"\",\"<br/>\",
+                  \"Community health workers:\",round(world_spdf$Community_health_workers,0),\"\")) %>%
+  addLegend(\"bottomright\", 
+  pal = colorNumeric(\"RdYlGn\", world_spdf$Health_facilities), values = ~Health_facilities,
+  title = \"Number of health care facilities\", opacity = 0.5)
+```"

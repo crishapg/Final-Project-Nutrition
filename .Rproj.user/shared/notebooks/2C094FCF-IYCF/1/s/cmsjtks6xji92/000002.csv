@@ -1,0 +1,13 @@
+"0","```r
+library(leaflet)
+library (raster)
+library(rgdal)
+library(RColorBrewer)
+library(devtools)
+#devtools::install_github(\"rstudio/leaflet\")
+setwd(\"C:/Users/crish/OneDrive/Documents/Columbia SIPA/2017 Spring/Data Visualization/Final Project/\")
+library(readr)
+iycf <- readstata13::read.dta13(\"data/MAP_2015_General_Info_IYCF.dta\")
+sam <- readstata13::read.dta13(\"data/2015_SAM_TOTAL.dta\")
+mnp <- readstata13::read.dta13(\"data/2015_MNP.dta\")
+```"

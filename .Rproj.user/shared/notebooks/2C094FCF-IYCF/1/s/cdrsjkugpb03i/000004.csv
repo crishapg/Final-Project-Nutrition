@@ -1,0 +1,6 @@
+"0","library(raster)"
+"0","#world_spdf <- shapefile(""data/world_map/TM_WORLD_BORDERS_SIMPL-0.3.shp"")"
+"0","# Merge the QoG data to Shape Files"
+"0","library(dplyr)"
+"0","IYCF2 <- world_spdf@data %>% left_join(iycf_v2, by = c(FIPS = ""fips""))"
+"0","world_spdf@data <- IYCF2"

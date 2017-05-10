@@ -1,0 +1,3 @@
+"0","plot_ly(trend_stunting_global, x = ~year, y=~stunting_global, "
+"0","                     type = ""bar"","
+"0","                     text = ~paste('Stunting (%):',stunting_global, 'Year:', year))"
